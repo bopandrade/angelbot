@@ -15,7 +15,7 @@ class JobHunter
     elsif driver == :poltergeist
       @s.driver.browser.js_errors = false
     end
-    
+
     @@no_locations = Set.new []
 
     @@compensation_min = ENV['AL_COMPENSATION'].to_i || nil
@@ -25,12 +25,23 @@ class JobHunter
       puts 'min compensation: ' + @@compensation_min.to_s
     end
 
-    @@locations = Set.new ['San Francisco', 'Oakland', 'Santa Clara', 'Palo Alto',
+    locations_1 = Set.new ['San Francisco', 'Oakland', 'Palo Alto',
+                           'San Francisco Bay Area', 'Millbrae', 'Foster City', 
+                           'Stanford', 'Mountain View', 'Sunnyvale', 'Silicon Valley',
+                           'Berkeley', 'Remote', 'San Mateo',
+                           'Redwood City', 'Burlingame',
+                           'South Bay', 'Menlo Park']
+
+
+    locations_2 = Set.new ['San Francisco', 'Oakland', 'Santa Clara', 'Palo Alto',
                            'San Francisco Bay Area', 'Millbrae', 'Foster City', 'Los Angeles', 
                            'Stanford', 'Mountain View', 'Sunnyvale', 'Silicon Valley',
                            'Sacramento', 'Berkeley', 'Remote', 'San Ramon', 'San Mateo',
                            'Redwood City', 'San Leandro', 'San Diego', 'Burlingame',
                            'South Bay', 'Menlo Park']
+
+
+    @@locations = locations_1
     @@job_generic = Set.new ['Enginner', 'Developer']
     @@job_need = Set.new ['Backend', 'Stack', 'Fullstack', 'QA', 'Data', 'BackEnd', 'Software',
                           'Machine', 'Server', 'Solutions', 'Site', 'Reliability', 'Security',
@@ -39,7 +50,7 @@ class JobHunter
                           'Quality', 'Assurance', 'PHP']
     @@job_block = Set.new ['Art', 'Creative', 'Frontend', 'UX', 'UI', 'Marketing', 'Video',
                            'Front', 'Head', 'Lead', 'Director', 'Scala', 'VP', 'CTO',
-                           'Founding', 'API', 'Manager', 'Supervisor']
+                           'Founding', 'API', 'Manager', 'Supervisor', 'iOS', 'Android']
 
     @@message = ",\n\nMy name is Bruno and since I was 12 I started programming to automate multiple tasks.\n\nAs it happens, this application was also submitted by a program. The code is available at bopandrade.com/angelbot\n\nIf this message finds you and piques your interest, hit me up!\n\nThanks for your time,\n\nBruno"
   end
@@ -147,9 +158,12 @@ class JobHunter
   def work
     link = 'https://angel.co/jobs'
     while true
+      loop_counter = 0
       begin
         while !logged_in?
           visit(link)
+          loop_counter += 1
+          raise "too many loops" if loop_counter > 15
           login
         end
         if session.has_no_css?('.job_listings.expanded')
@@ -185,12 +199,16 @@ class JobHunter
           current_listing.find(:css, 'div.js-done').click if current_listing.has_css?('div.js-done')
           puts 'still has interested button'
           sleep 2
+          loop_counter += 1
+          raise "too many loops" if loop_counter > 15
         end
 
         while session.has_no_css?('div.post_candidate_applied') &&
             session.has_no_css?('textarea.interested-note')
           sleep 2
           puts 'while no post candidate applied'
+          loop_counter += 1
+          raise "too many loops" if loop_counter > 15
         end
 
 
@@ -206,17 +224,22 @@ class JobHunter
             while textarea.value !~ /Thanks for your time/
               textarea.set(message)
               sleep 2
+              loop_counter += 1
+              raise "too many loops" if loop_counter > 15
             end
             session.find(:css, 'a.interested-with-note-button').click
             while session.has_css?('textarea.interested-note')
               sleep 2
+              loop_counter += 1
+              raise "too many loops" if loop_counter > 15
             end
           end
         end
 
         while session.has_no_css?('div.post_candidate_applied')
           sleep 2
-          debugnow
+          loop_counter += 1
+          raise "too many loops" if loop_counter > 15
         end
 
         next if jobs.count == 1
@@ -235,8 +258,7 @@ class JobHunter
       rescue StandardError => error
         puts error
         puts error.backtrace
-        puts 'error < exception variable'
-        debugnow
+        visit (link)
       end
 
     end
