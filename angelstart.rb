@@ -29,7 +29,8 @@ class JobHunter
                            'San Francisco Bay Area', 'Millbrae', 'Foster City', 'Los Angeles', 
                            'Stanford', 'Mountain View', 'Sunnyvale', 'Silicon Valley',
                            'Sacramento', 'Berkeley', 'Remote', 'San Ramon', 'San Mateo',
-                           'Redwood City', 'San Leandro', 'San Diego']
+                           'Redwood City', 'San Leandro', 'San Diego', 'Burlingame',
+                           'South Bay', 'Menlo Park']
     @@job_generic = Set.new ['Enginner', 'Developer']
     @@job_need = Set.new ['Backend', 'Stack', 'Fullstack', 'QA', 'Data', 'BackEnd', 'Software',
                           'Machine', 'Server', 'Solutions', 'Site', 'Reliability', 'Security',
@@ -38,7 +39,7 @@ class JobHunter
                           'Quality', 'Assurance', 'PHP']
     @@job_block = Set.new ['Art', 'Creative', 'Frontend', 'UX', 'UI', 'Marketing', 'Video',
                            'Front', 'Head', 'Lead', 'Director', 'Scala', 'VP', 'CTO',
-                           'Founding']
+                           'Founding', 'API', 'Manager', 'Supervisor']
 
     @@message = ",\n\nMy name is Bruno and since I was 12 I started programming to automate multiple tasks.\n\nAs it happens, this application was also submitted by a program. The code is available at bopandrade.com/angelbot\n\nIf this message finds you and piques your interest, hit me up!\n\nThanks for your time,\n\nBruno"
   end
