@@ -32,7 +32,7 @@ class JobHunter
     @@job_block = Set.new ['Art', 'Creative', 'Frontend', 'UX', 'UI', 'Marketing', 'Video',
                            'Front', 'Head', 'Lead', 'Director', 'Scala']
 
-    @@message = ",\n\nMy name is Bruno and since I was 12 I started programming to automate multiple tasks.\n\nAs it happens, this application was also submitted by a program. The code is available at bopandrade.com/angelbot\n\nIf this message finds you and peeks your interest, hit me up!\n\nThanks for your time,\n\nBruno"
+    @@message = ",\n\nMy name is Bruno and since I was 12 I started programming to automate multiple tasks.\n\nAs it happens, this application was also submitted by a program. The code is available at bopandrade.com/angelbot\n\nIf this message finds you and piques your interest, hit me up!\n\nThanks for your time,\n\nBruno"
   end
   def debug?
     begin
