@@ -18,6 +18,13 @@ class JobHunter
     
     @@no_locations = Set.new []
 
+    @@compensation_min = ENV['AL_COMPENSATION'].to_i || nil
+    if !@@compensation_min
+      puts 'no compensation filter'
+    else
+      puts 'min compensation: ' + @@compensation_min.to_s
+    end
+
     @@locations = Set.new ['San Francisco', 'Oakland', 'Santa Clara', 'Palo Alto',
                            'San Francisco Bay Area', 'Millbrae', 'Foster City', 'Los Angeles', 
                            'Stanford', 'Mountain View', 'Sunnyvale', 'Silicon Valley',
@@ -28,9 +35,10 @@ class JobHunter
                           'Machine', 'Server', 'Solutions', 'Site', 'Reliability', 'Security',
                           'Operations', 'Product', 'Platform', 'DevOps', 'Ruby', 'Learning',
                           'Back', 'Web', 'Autonomy', 'App', 'Game', 'Infrastructure',
-                          'Quality', 'Assurance']
+                          'Quality', 'Assurance', 'PHP']
     @@job_block = Set.new ['Art', 'Creative', 'Frontend', 'UX', 'UI', 'Marketing', 'Video',
-                           'Front', 'Head', 'Lead', 'Director', 'Scala']
+                           'Front', 'Head', 'Lead', 'Director', 'Scala', 'VP', 'CTO',
+                           'Founding']
 
     @@message = ",\n\nMy name is Bruno and since I was 12 I started programming to automate multiple tasks.\n\nAs it happens, this application was also submitted by a program. The code is available at bopandrade.com/angelbot\n\nIf this message finds you and piques your interest, hit me up!\n\nThanks for your time,\n\nBruno"
   end
@@ -50,6 +58,15 @@ class JobHunter
   end
 
   def job_match(job_div)
+    if @@compensation_min
+      if job_div.find(:css, 'div.compensation').text =~ /\$(.+?)k - \$(.+?)k/
+        if @@compensation_min > $2.to_i
+          return false
+        end
+      else
+        return false
+      end
+    end
     job_name = job_div.find(:css, 'div.title').text.gsub(/[^0-9a-z ]/i, ' ')
     if matcher(job_div.find(:css, 'div.tags').text, '·', @@locations) &&
         matcher(job_name, ' ', @@job_need) &&
@@ -211,6 +228,8 @@ class JobHunter
         0.upto(jobs.length - 1) do |i|
           jobs_apply[i] ? interested[i].click : not_interested[i].click
         end
+
+        debugnow if debug?
 
       rescue StandardError => error
         puts error
